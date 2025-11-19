@@ -10,6 +10,8 @@ namespace PH{
     // Variables para almacenar los valores de calibración (se inicializan con valores por defecto)
     let neutralVoltage: number = 1500; // Valor analógico (mV) para pH 7.0
     let acidVoltage: number = 2000;   // Valor analógico (mV) para pH 4.0
+    let slope: number = 0;
+    let offset: number =0;
     const microbitVoltage: number = 3300; // Voltaje al que la microbit asigna 1023 
     const CALIBRATION_SAMPLES: number = 50; // Número de muestras para promediar
 
@@ -74,6 +76,12 @@ namespace PH{
         }
         calibratePH(7);
         basic.pause(200);
+
+        //Calculo de pendiente
+        slope = (4 - 7)/(acidVoltage - neutralVoltage);
+        //Calculo de offset
+        offset = 7 - slope*neutralVoltage;
+
     }
 
     /**
@@ -83,15 +91,15 @@ namespace PH{
     export function medirPh(): number {
         let voltage = readVoltage(); // Leer el voltaje actual
         let phValue: number;
-
         // Prevenir división por cero si la calibración no se ha realizado correctamente
         if (neutralVoltage === acidVoltage) {
             return 0; // O manejar el error de otra manera
         }
 
         // Fórmula lineal: PH = 7.0 + (voltaje actual - voltaje pH7) * (4.0 - 7.0) / (voltaje pH4 - voltaje pH7)
-        phValue = 7.0 + (voltage - neutralVoltage) * (4.0 - 7.0) / (acidVoltage - neutralVoltage);
-
+        //phValue = 7.0 + (voltage - neutralVoltage) * (4.0 - 7.0) / (acidVoltage - neutralVoltage);
+        // Otra forma de expresarlo PH = slope*voltage + offset
+        phValue = slope*voltage + offset;
         return phValue;
     }
 }
