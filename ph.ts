@@ -24,9 +24,7 @@ namespace PH{
 
     // Asigna valores a las variables neutralVoltage y acidVoltage
     function calibratePH(phValue: number) {
-        //basic.showString("Calibrando...");
         serial.writeLine("Calibrando...");
-        //basic.pause(5000); // Esperar 5 segundos
 
         let sumVoltage: number = 0;
         for (let i = 0; i < CALIBRATION_SAMPLES; i++) {
@@ -78,7 +76,7 @@ namespace PH{
         basic.pause(200);
 
         //Calculo de pendiente
-        slope = (4 - 7)/(acidVoltage - neutralVoltage);
+        slope = (7 - 4)/(neutralVoltage - acidVoltage);
         //Calculo de offset
         offset = 7 - slope*neutralVoltage;
 
